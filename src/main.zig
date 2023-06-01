@@ -1,5 +1,6 @@
 const std = @import("std");
 const c = @cImport(@cInclude("raylib.h"));
+const Game = @import("game/Game.zig");
 
 pub fn main() !void {
     const screenWidth = 800;
@@ -10,6 +11,8 @@ pub fn main() !void {
     c.SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
+    var game = Game{};
+    game.init();
     // Main game loop
     while (!c.WindowShouldClose()) // Detect window close button or ESC key
     {
@@ -17,15 +20,10 @@ pub fn main() !void {
         //----------------------------------------------------------------------------------
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
-
+        game.simulate();
         // Draw
         //----------------------------------------------------------------------------------
-        c.BeginDrawing();
-        {
-            c.ClearBackground(c.RAYWHITE);
-            c.DrawText("Congrats! You created your first window!", 190, 200, 20, c.LIGHTGRAY);
-        }
-        c.EndDrawing();
+        game.render();
         //----------------------------------------------------------------------------------
     }
 

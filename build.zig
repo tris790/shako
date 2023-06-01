@@ -16,10 +16,10 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+    const raylib = raylib_dep.artifact("raylib");
 
     exe.linkLibC();
-    exe.linkLibrary(raylib_dep.artifact("raylib"));
-
+    exe.linkLibrary(raylib);
     b.installArtifact(exe);
 
     const run_cmd = b.addRunArtifact(exe);
