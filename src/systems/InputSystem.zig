@@ -1,9 +1,11 @@
 const c = @cImport(@cInclude("raylib.h"));
 const Ecs = @import("../ecs/Ecs.zig");
 
+const TransformComponent = @import("../components/TransformComponent.zig");
 const MovementComponent = @import("../components/MovementComponent.zig");
+const Projectile = @import("../game/Projectile.zig");
 
-pub fn jumping() bool {
+pub fn isShooting() bool {
     return c.IsKeyDown(c.KEY_SPACE);
 }
 
@@ -21,6 +23,14 @@ pub fn movement() c.Vector2 {
 }
 
 pub fn run(ecs: *Ecs) void {
+    var transform_component: *TransformComponent = ecs.getComponent(TransformComponent, 0);
     var movement_component: *MovementComponent = ecs.getComponent(MovementComponent, 0);
     movement_component.direction = movement();
+    if (movement_component.direction.x != 0 and movement_component.direction.y != 0) {
+        movement_component.last_direction = movement_component.direction;
+    }
+
+    if (isShooting()) {
+        Projectile.spawn(ecs, transform_component.position, movement_component.direction, c.Vector2{ .x = 5, .y = 5 });
+    }
 }

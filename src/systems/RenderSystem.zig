@@ -10,7 +10,9 @@ pub fn run(ecs: *Ecs, transforms: []TransformComponent, textures: []TextureCompo
     {
         c.ClearBackground(c.RAYWHITE);
         for (transforms, textures) |transform, texture| {
-            c.DrawCircleV(transform.position, transform.scale.x, texture.color);
+            if (transform.world_id >= 0) {
+                c.DrawCircleV(transform.position, transform.scale.x, texture.color);
+            }
         }
     }
     c.EndDrawing();
