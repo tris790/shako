@@ -3,6 +3,7 @@ const t = @import("type");
 
 const Entity = @import("Entity.zig");
 const MovementComponent = @import("../components/MovementComponent.zig");
+const TextureComponent = @import("../components/TextureComponent.zig");
 const TransformComponent = @import("../components/TransformComponent.zig");
 
 const InputSystem = @import("../systems/InputSystem.zig");
@@ -11,6 +12,7 @@ const RenderSystem = @import("../systems/RenderSystem.zig");
 
 transforms: [2]TransformComponent = undefined,
 movements: [2]MovementComponent = undefined,
+textures: [2]TextureComponent = undefined,
 player: Entity = undefined,
 
 pub fn getComponent(self: *@This(), comptime T: type, entity_id: u64) *T {
@@ -29,5 +31,5 @@ pub fn getComponent(self: *@This(), comptime T: type, entity_id: u64) *T {
 pub fn runSystems(self: *@This()) void {
     InputSystem.run(self);
     MovementSystem.run(self, &self.transforms, &self.movements);
-    RenderSystem.run(self, &self.transforms);
+    RenderSystem.run(self, &self.transforms, &self.textures);
 }
