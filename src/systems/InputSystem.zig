@@ -53,9 +53,11 @@ pub fn run(ecs: *Ecs) void {
     }
 
     if (hasPressedSpecialAbility()) {
-        var remaining_projectiles: u32 = 10;
-        var angle_step = 2 * std.math.pi / @intToFloat(f32, remaining_projectiles);
         const colors = [_]c.Color{ c.PINK, c.GREEN };
+        const full_circle_rad = 2 * std.math.pi;
+        var remaining_projectiles: u32 = 10;
+        const angle_step = full_circle_rad / @intToFloat(f32, remaining_projectiles);
+
         while (remaining_projectiles > 0) {
             const angle = angle_step * @intToFloat(f32, remaining_projectiles);
             const opposite = std.math.sin(angle);
@@ -66,7 +68,6 @@ pub fn run(ecs: *Ecs) void {
             };
 
             const color_index = remaining_projectiles % colors.len;
-            std.log.info("shooting: {} angle: {} direction: {}", .{ color_index, @floatToInt(u32, angle), direction });
             const texture = TextureComponent{ .color = colors[color_index] };
             Projectile.spawn(
                 ecs,
@@ -75,6 +76,7 @@ pub fn run(ecs: *Ecs) void {
                 c.Vector2{ .x = 5, .y = 5 },
                 texture,
             );
+
             remaining_projectiles -= 1;
         }
     }
