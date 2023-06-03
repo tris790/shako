@@ -11,6 +11,10 @@ pub fn isShooting() bool {
     return c.IsKeyDown(c.KEY_SPACE);
 }
 
+pub fn hasToggledDebug() bool {
+    return c.IsKeyPressed(c.KEY_H);
+}
+
 pub fn movement() c.Vector2 {
     const right = @intCast(i32, @boolToInt(c.IsKeyDown(c.KEY_RIGHT)));
     const left = @intCast(i32, @boolToInt(c.IsKeyDown(c.KEY_LEFT)));
@@ -36,5 +40,9 @@ pub fn run(ecs: *Ecs) void {
 
     if (isShooting()) {
         Projectile.spawn(ecs, transform_component.position, movement_component.last_direction, c.Vector2{ .x = 5, .y = 5 });
+    }
+
+    if (hasToggledDebug()) {
+        ecs.debug.render_hitboxes = !ecs.debug.render_hitboxes;
     }
 }

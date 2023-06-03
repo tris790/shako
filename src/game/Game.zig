@@ -4,6 +4,7 @@ const Shape = @import("../game/Shapes.zig").Shape;
 
 const Math = @import("../Math.zig");
 const Ecs = @import("../ecs/Ecs.zig");
+
 const TextureComponent = @import("../components/TextureComponent.zig");
 const CollisionComponent = @import("../components/CollisionComponent.zig");
 const TransformComponent = @import("../components/TransformComponent.zig");

@@ -1,5 +1,7 @@
 const std = @import("std");
 const Entity = @import("Entity.zig");
+const Debug = @import("../game/Debug.zig");
+
 const MovementComponent = @import("../components/MovementComponent.zig");
 const TextureComponent = @import("../components/TextureComponent.zig");
 const TransformComponent = @import("../components/TransformComponent.zig");
@@ -19,7 +21,9 @@ movements: [MAX_ENTITY]MovementComponent = undefined,
 textures: [MAX_ENTITY]TextureComponent = undefined,
 times: [MAX_ENTITY]TimeComponent = undefined,
 collisions: [MAX_ENTITY]CollisionComponent = undefined,
+
 player: Entity = undefined,
+debug: Debug = Debug{},
 
 pub fn getComponent(self: *@This(), comptime T: type, entity_id: u64) *T {
     const selfFields = @typeInfo(@This()).Struct.fields;
