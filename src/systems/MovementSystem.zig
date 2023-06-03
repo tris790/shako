@@ -10,7 +10,7 @@ const CollisionComponent = @import("../components/CollisionComponent.zig");
 
 pub fn run(ecs: *Ecs, transforms: []TransformComponent, movements: []MovementComponent, collisions: []CollisionComponent) void {
     for (transforms, movements, collisions) |*transform, *movement, *collision| {
-        const displacement = Math.Vector2Multiply(movement.direction, movement.velocity);
+        const displacement = Math.Vector2Scale(Math.Vector2Multiply(movement.direction, movement.velocity), c.GetFrameTime());
 
         if (displacement.x != 0 or displacement.y != 0) {
             const newPosition = Math.Vector2Add(transform.position, displacement);

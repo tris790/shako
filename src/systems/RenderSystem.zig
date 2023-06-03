@@ -1,4 +1,6 @@
+const std = @import("std");
 const c = @cImport(@cInclude("raylib.h"));
+
 const Ecs = @import("../ecs/Ecs.zig");
 const Shape = @import("../game/Shapes.zig").Shape;
 
@@ -10,6 +12,12 @@ pub fn run(ecs: *Ecs, transforms: []TransformComponent, textures: []TextureCompo
     c.BeginDrawing();
     {
         c.ClearBackground(c.RAYWHITE);
+
+        const fps = c.GetFPS();
+        var framerate_string: [100]u8 = std.mem.zeroes([100]u8);
+        const framerate_string_slice = std.fmt.bufPrint(&framerate_string, "FrameTime {}", .{fps}) catch unreachable;
+        c.DrawText(framerate_string_slice.ptr, 0, 0, 30, c.BLACK);
+
         for (transforms, textures, collisions) |transform, texture, *collision| {
             if (transform.world_id >= 0) {
                 if (ecs.debug.render_hitboxes) {

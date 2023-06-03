@@ -45,7 +45,7 @@ pub fn run(ecs: *Ecs) void {
 
     if (isShooting()) {
         const texture = TextureComponent{ .color = c.BLACK };
-        Projectile.spawn(ecs, transform_component.position, movement_component.last_direction, c.Vector2{ .x = 5, .y = 5 }, texture);
+        Projectile.spawn(ecs, transform_component.position, movement_component.last_direction, c.Vector2{ .x = 1000, .y = 1000 }, texture);
     }
 
     if (hasToggledDebug()) {
@@ -73,7 +73,7 @@ pub fn run(ecs: *Ecs) void {
                 ecs,
                 transform_component.position,
                 direction,
-                c.Vector2{ .x = 5, .y = 5 },
+                c.Vector2{ .x = 1000, .y = 1000 },
                 texture,
             );
 

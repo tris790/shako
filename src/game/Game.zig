@@ -26,7 +26,7 @@ fn createPlayer(ecs: *Ecs) void {
     const width = 50;
     const height = 50;
     const player_transform_component = TransformComponent{ .position = c.Vector2{ .x = 50, .y = 50 }, .scale = c.Vector2{ .x = width / 2, .y = height / 2 } };
-    const player_movement_component = MovementComponent{ .velocity = c.Vector2{ .x = 10, .y = 10 } };
+    const player_movement_component = MovementComponent{ .velocity = c.Vector2{ .x = 1000, .y = 1000 } };
     const player_texture_component = TextureComponent{ .color = c.BLUE };
 
     const player_collision_component = CollisionComponent{
