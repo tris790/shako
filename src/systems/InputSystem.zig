@@ -1,3 +1,5 @@
+const std = @import("std");
+
 const c = @cImport(@cInclude("raylib.h"));
 const Ecs = @import("../ecs/Ecs.zig");
 
@@ -26,6 +28,7 @@ pub fn run(ecs: *Ecs) void {
     var transform_component: *TransformComponent = ecs.getComponent(TransformComponent, 0);
     var movement_component: *MovementComponent = ecs.getComponent(MovementComponent, 0);
     movement_component.direction = movement();
+
     if (movement_component.direction.x != 0 and movement_component.direction.y != 0) {
         movement_component.last_direction = movement_component.direction;
     }
