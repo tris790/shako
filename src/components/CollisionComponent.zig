@@ -1,7 +1,7 @@
 const c = @cImport(@cInclude("raylib.h"));
 
+ignore: u8,
 is_solid: bool = true,
-colliding: bool = false,
 hitbox: c.Rectangle,
 
 pub fn addPositionToHitbox(self: *@This(), position: c.Vector2) c.Vector2 {

@@ -1,6 +1,4 @@
 const std = @import("std");
-const t = @import("type");
-
 const Entity = @import("Entity.zig");
 const MovementComponent = @import("../components/MovementComponent.zig");
 const TextureComponent = @import("../components/TextureComponent.zig");
@@ -13,12 +11,14 @@ const MovementSystem = @import("../systems/MovementSystem.zig");
 const RenderSystem = @import("../systems/RenderSystem.zig");
 const TimeSystem = @import("../systems/TimeSystem.zig");
 
+const MAX_ENTITY = 1000;
+
 entityCount: u32 = 0,
-transforms: [1000]TransformComponent = undefined,
-movements: [1000]MovementComponent = undefined,
-textures: [1000]TextureComponent = undefined,
-times: [1000]TimeComponent = undefined,
-collisions: [1000]CollisionComponent = undefined,
+transforms: [MAX_ENTITY]TransformComponent = undefined,
+movements: [MAX_ENTITY]MovementComponent = undefined,
+textures: [MAX_ENTITY]TextureComponent = undefined,
+times: [MAX_ENTITY]TimeComponent = undefined,
+collisions: [MAX_ENTITY]CollisionComponent = undefined,
 player: Entity = undefined,
 
 pub fn getComponent(self: *@This(), comptime T: type, entity_id: u64) *T {
@@ -49,7 +49,12 @@ pub fn getAllComponents(self: *@This(), comptime T: type) []T {
 
 pub fn createEntity(self: *@This(), components: anytype) u32 {
     const newEntityId = self.entityCount;
-    self.entityCount = newEntityId + 1;
+    if (self.entityCount < MAX_ENTITY - 1) {
+        self.entityCount = newEntityId + 1;
+    } else {
+        std.log.err("Overflowed entities", .{});
+    }
+
     const componentsTypes = @typeInfo(@TypeOf(components)).Struct.fields;
 
     inline for (componentsTypes) |component| {
