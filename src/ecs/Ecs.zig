@@ -6,6 +6,7 @@ const MovementComponent = @import("../components/MovementComponent.zig");
 const TextureComponent = @import("../components/TextureComponent.zig");
 const TransformComponent = @import("../components/TransformComponent.zig");
 const TimeComponent = @import("../components/TimeComponent.zig");
+const CollisionComponent = @import("../components/CollisionComponent.zig");
 
 const InputSystem = @import("../systems/InputSystem.zig");
 const MovementSystem = @import("../systems/MovementSystem.zig");
@@ -17,6 +18,7 @@ transforms: [1000]TransformComponent = undefined,
 movements: [1000]MovementComponent = undefined,
 textures: [1000]TextureComponent = undefined,
 times: [1000]TimeComponent = undefined,
+collisions: [1000]CollisionComponent = undefined,
 player: Entity = undefined,
 
 pub fn getComponent(self: *@This(), comptime T: type, entity_id: u64) *T {
@@ -27,6 +29,19 @@ pub fn getComponent(self: *@This(), comptime T: type, entity_id: u64) *T {
         if (fieldTypeInfo == .Array) {
             if (fieldTypeInfo.Array.child == T) {
                 return &@field(self, f.name)[entity_id];
+            }
+        }
+    }
+}
+
+pub fn getAllComponents(self: *@This(), comptime T: type) []T {
+    const selfFields = @typeInfo(@This()).Struct.fields;
+
+    inline for (selfFields) |f| {
+        const fieldTypeInfo = @typeInfo(f.type);
+        if (fieldTypeInfo == .Array) {
+            if (fieldTypeInfo.Array.child == T) {
+                return &@field(self, f.name);
             }
         }
     }
@@ -56,6 +71,6 @@ pub fn createEntity(self: *@This(), components: anytype) u32 {
 pub fn runSystems(self: *@This()) void {
     InputSystem.run(self);
     TimeSystem.run(self, &self.times);
-    MovementSystem.run(self, &self.transforms, &self.movements);
-    RenderSystem.run(self, &self.transforms, &self.textures);
+    MovementSystem.run(self, &self.transforms, &self.movements, &self.collisions);
+    RenderSystem.run(self, &self.transforms, &self.textures, &self.collisions);
 }

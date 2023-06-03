@@ -3,13 +3,17 @@ const Ecs = @import("../ecs/Ecs.zig");
 
 const TextureComponent = @import("../components/TextureComponent.zig");
 const TransformComponent = @import("../components/TransformComponent.zig");
+const CollisionComponent = @import("../components/CollisionComponent.zig");
 
-pub fn run(ecs: *Ecs, transforms: []TransformComponent, textures: []TextureComponent) void {
+pub fn run(ecs: *Ecs, transforms: []TransformComponent, textures: []TextureComponent, collisions: []CollisionComponent) void {
     _ = ecs;
     c.BeginDrawing();
     {
         c.ClearBackground(c.RAYWHITE);
-        for (transforms, textures) |transform, texture| {
+        for (transforms, textures, collisions) |transform, texture, *collision| {
+            const hitbox_position = collision.addPositionToHitbox(transform.position);
+            const hitbox = c.Rectangle{ .x = hitbox_position.x, .y = hitbox_position.y, .width = collision.hitbox.width, .height = collision.hitbox.height };
+            c.DrawRectangleRec(hitbox, c.YELLOW);
             if (transform.world_id >= 0) {
                 c.DrawCircleV(transform.position, transform.scale.x, texture.color);
             }
