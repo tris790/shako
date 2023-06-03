@@ -53,7 +53,7 @@ pub fn run(ecs: *Ecs, transforms: []TransformComponent, movements: []MovementCom
                 }
             }
 
-            if (collided_with.items.len <= 1) {
+            if (collided_with.items.len == 0) {
                 transform.position = newPosition;
             } else {
                 std.log.info("Colliding with {} entities", .{collided_with.items.len});
