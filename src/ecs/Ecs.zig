@@ -56,7 +56,7 @@ pub fn createEntity(self: *@This(), components: anytype) u32 {
     if (self.entityCount < MAX_ENTITY - 1) {
         self.entityCount = newEntityId + 1;
     } else {
-        std.log.err("Overflowed entities", .{});
+        std.log.err("Overflowed entities, count = {}", .{self.entityCount});
     }
 
     const componentsTypes = @typeInfo(@TypeOf(components)).Struct.fields;
@@ -79,7 +79,7 @@ pub fn createEntity(self: *@This(), components: anytype) u32 {
 
 pub fn runSystems(self: *@This()) void {
     InputSystem.run(self);
-    TimeSystem.run(self, &self.times);
-    MovementSystem.run(self, &self.transforms, &self.movements, &self.collisions);
-    RenderSystem.run(self, &self.transforms, &self.textures, &self.collisions);
+    TimeSystem.run(self, self.times[0..self.entityCount]);
+    MovementSystem.run(self, self.transforms[0..self.entityCount], self.movements[0..self.entityCount], self.collisions[0..self.entityCount]);
+    RenderSystem.run(self, self.transforms[0..self.entityCount], self.textures[0..self.entityCount], self.collisions[0..self.entityCount]);
 }
