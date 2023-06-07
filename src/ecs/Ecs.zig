@@ -8,6 +8,7 @@ const TransformComponent = @import("../components/TransformComponent.zig");
 const TimeComponent = @import("../components/TimeComponent.zig");
 const CollisionComponent = @import("../components/CollisionComponent.zig");
 const HealthComponent = @import("../components/HealthComponent.zig");
+const HudComponent = @import("../components/HudComponent.zig");
 
 const InputSystem = @import("../systems/InputSystem.zig");
 const MovementSystem = @import("../systems/MovementSystem.zig");
@@ -27,6 +28,7 @@ healths: [MAX_ENTITY]HealthComponent = undefined,
 
 player: Entity = undefined,
 debug: Debug = Debug{},
+hud: HudComponent = HudComponent{},
 
 pub fn getComponent(self: *@This(), comptime T: type, entity_id: u64) *T {
     const selfFields = @typeInfo(@This()).Struct.fields;

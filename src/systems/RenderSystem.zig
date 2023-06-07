@@ -10,8 +10,13 @@ const CollisionComponent = @import("../components/CollisionComponent.zig");
 const HealthComponent = @import("../components/HealthComponent.zig");
 
 const HP_COLORS = [_]c.Color{ c.RED, c.GREEN };
+const HOTBAR_COLORS = [_]c.Color{ c.RED, c.BLUE };
 
 pub fn run(ecs: *Ecs, transforms: []TransformComponent, textures: []TextureComponent, collisions: []CollisionComponent, healths: []HealthComponent) void {
+    const window_height = c.GetScreenHeight();
+    const window_width = c.GetScreenWidth();
+    _ = window_width;
+
     c.BeginDrawing();
     {
         c.ClearBackground(c.RAYWHITE);
@@ -39,6 +44,22 @@ pub fn run(ecs: *Ecs, transforms: []TransformComponent, textures: []TextureCompo
                     c.DrawRectangleV(transform.position, c.Vector2{ .x = health_ratio_left * 100, .y = 10 }, HP_COLORS[@boolToInt(health_ratio_left > 0.3)]);
                 }
             }
+        }
+
+        const hotbar_element_padding = 5.0;
+        const hotbar_element_size = c.Vector2{ .x = 20, .y = 20 };
+        const hotbar_element_y_offset = @intToFloat(f32, window_height) - hotbar_element_size.y - hotbar_element_padding;
+
+        var hotbar_index: u8 = 0;
+        while (hotbar_index < ecs.hud.hotbarItems.len) {
+            const hotbar_element_x_offset = @intToFloat(f32, hotbar_index) * (hotbar_element_size.x + hotbar_element_padding);
+            c.DrawRectangleV(
+                c.Vector2{ .x = hotbar_element_x_offset, .y = hotbar_element_y_offset },
+                hotbar_element_size,
+                HOTBAR_COLORS[@boolToInt(hotbar_index == ecs.hud.selectedHotbarIndex)],
+            );
+
+            hotbar_index += 1;
         }
     }
     c.EndDrawing();

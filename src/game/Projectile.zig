@@ -7,18 +7,16 @@ const TransformComponent = @import("../components/TransformComponent.zig");
 const TextureComponent = @import("../components/TextureComponent.zig");
 const CollisionComponent = @import("../components/CollisionComponent.zig");
 
-pub fn spawn(ecs: *Ecs, position: c.Vector2, direction: c.Vector2, velocity: c.Vector2, texture: TextureComponent) void {
-    const width = 20;
-    const height = 20;
+pub fn spawn(ecs: *Ecs, position: c.Vector2, direction: c.Vector2, velocity: c.Vector2, texture: TextureComponent, size: c.Vector2) void {
     const projectileMovementComponent = MovementComponent{ .direction = direction, .velocity = velocity };
-    const projectileTransformComponent = TransformComponent{ .position = position, .scale = c.Vector2{ .x = width / 2, .y = height / 2 } };
+    const projectileTransformComponent = TransformComponent{ .position = position, .scale = size };
     const projectile_collision_component = CollisionComponent{
         .ignore = 0,
         .hitbox = c.Rectangle{
-            .x = -(width / 2),
-            .y = -(height / 2),
-            .width = width,
-            .height = height,
+            .x = -size.x,
+            .y = -size.y,
+            .width = size.x * 2,
+            .height = size.y * 2,
         },
     };
 
