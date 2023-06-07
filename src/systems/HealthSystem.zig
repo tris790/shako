@@ -15,8 +15,8 @@ pub fn run(ecs: *Ecs, healths: []HealthComponent) void {
         }
 
         // TODO: we probably need to watchout for overflow and underflow
-        health.health -= health.damageToTake;
-        health.healing += health.healing;
+        health.health -|= health.damageToTake;
+        health.healing +|= health.healing;
 
         health.healing = 0;
         health.damageToTake = 0;

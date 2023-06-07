@@ -29,7 +29,7 @@ fn createPlayer(ecs: *Ecs) void {
     const player_transform_component = TransformComponent{ .position = c.Vector2{ .x = 50, .y = 50 }, .scale = c.Vector2{ .x = width / 2, .y = height / 2 } };
     const player_movement_component = MovementComponent{ .velocity = c.Vector2{ .x = 1000, .y = 1000 } };
     const player_texture_component = TextureComponent{ .color = c.BLUE };
-    const player_health_component = HealthComponent{ .health = 100 };
+    const player_health_component = HealthComponent{ .health = 100, .totalHealth = 100 };
 
     const player_collision_component = CollisionComponent{
         .ignore = 0,
@@ -57,7 +57,7 @@ fn createMonster(ecs: *Ecs) void {
         },
     };
     const monster_texture_component = TextureComponent{ .color = c.MAROON };
-    const monster_health_component = HealthComponent{ .health = 100 };
+    const monster_health_component = HealthComponent{ .health = 100, .totalHealth = 100 };
     _ = ecs.createEntity(.{ monster_transform_component, monster_texture_component, monster_collision_component, monster_health_component });
 }
 

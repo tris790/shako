@@ -9,7 +9,7 @@ const TransformComponent = @import("../components/TransformComponent.zig");
 const CollisionComponent = @import("../components/CollisionComponent.zig");
 const HealthComponent = @import("../components/HealthComponent.zig");
 
-const HP_COLORS = [_]c.Color{ c.GREEN, c.RED };
+const HP_COLORS = [_]c.Color{ c.RED, c.GREEN };
 
 pub fn run(ecs: *Ecs, transforms: []TransformComponent, textures: []TextureComponent, collisions: []CollisionComponent, healths: []HealthComponent) void {
     c.BeginDrawing();
@@ -34,7 +34,10 @@ pub fn run(ecs: *Ecs, transforms: []TransformComponent, textures: []TextureCompo
                     .Rectangle => c.DrawRectangleV(transform.position, transform.scale, texture.color),
                 }
 
-                c.DrawRectangleV(transform.position, c.Vector2{ .x = 100, .y = 10 }, HP_COLORS[@boolToInt(health.dead)]);
+                if (health.health > 0) {
+                    const health_ratio_left = @intToFloat(f32, health.health) / @intToFloat(f32, health.totalHealth);
+                    c.DrawRectangleV(transform.position, c.Vector2{ .x = health_ratio_left * 100, .y = 10 }, HP_COLORS[@boolToInt(health_ratio_left > 0.3)]);
+                }
             }
         }
     }
