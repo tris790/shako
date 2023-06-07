@@ -9,6 +9,7 @@ const TextureComponent = @import("../components/TextureComponent.zig");
 const CollisionComponent = @import("../components/CollisionComponent.zig");
 const TransformComponent = @import("../components/TransformComponent.zig");
 const MovementComponent = @import("../components/MovementComponent.zig");
+const HealthComponent = @import("../components/HealthComponent.zig");
 
 ecs: Ecs = Ecs{},
 
@@ -28,6 +29,7 @@ fn createPlayer(ecs: *Ecs) void {
     const player_transform_component = TransformComponent{ .position = c.Vector2{ .x = 50, .y = 50 }, .scale = c.Vector2{ .x = width / 2, .y = height / 2 } };
     const player_movement_component = MovementComponent{ .velocity = c.Vector2{ .x = 1000, .y = 1000 } };
     const player_texture_component = TextureComponent{ .color = c.BLUE };
+    const player_health_component = HealthComponent{ .health = 100 };
 
     const player_collision_component = CollisionComponent{
         .ignore = 0,
@@ -38,7 +40,7 @@ fn createPlayer(ecs: *Ecs) void {
             .height = height,
         },
     };
-    _ = ecs.createEntity(.{ player_transform_component, player_movement_component, player_texture_component, player_collision_component });
+    _ = ecs.createEntity(.{ player_transform_component, player_movement_component, player_texture_component, player_collision_component, player_health_component });
 }
 
 fn createMonster(ecs: *Ecs) void {
@@ -55,7 +57,8 @@ fn createMonster(ecs: *Ecs) void {
         },
     };
     const monster_texture_component = TextureComponent{ .color = c.MAROON };
-    _ = ecs.createEntity(.{ monster_transform_component, monster_texture_component, monster_collision_component });
+    const monster_health_component = HealthComponent{ .health = 100 };
+    _ = ecs.createEntity(.{ monster_transform_component, monster_texture_component, monster_collision_component, monster_health_component });
 }
 
 fn createWall(ecs: *Ecs) void {

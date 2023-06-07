@@ -63,8 +63,8 @@ pub fn run(ecs: *Ecs) void {
             const opposite = std.math.sin(angle);
             const adjacent = std.math.cos(angle);
             const direction = c.Vector2{
-                .x = opposite,
-                .y = adjacent,
+                .x = adjacent,
+                .y = opposite,
             };
 
             const color_index = remaining_projectiles % colors.len;

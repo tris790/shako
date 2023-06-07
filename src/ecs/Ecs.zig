@@ -7,11 +7,13 @@ const TextureComponent = @import("../components/TextureComponent.zig");
 const TransformComponent = @import("../components/TransformComponent.zig");
 const TimeComponent = @import("../components/TimeComponent.zig");
 const CollisionComponent = @import("../components/CollisionComponent.zig");
+const HealthComponent = @import("../components/HealthComponent.zig");
 
 const InputSystem = @import("../systems/InputSystem.zig");
 const MovementSystem = @import("../systems/MovementSystem.zig");
 const RenderSystem = @import("../systems/RenderSystem.zig");
 const TimeSystem = @import("../systems/TimeSystem.zig");
+const HealthSystem = @import("../systems/HealthSystem.zig");
 
 const MAX_ENTITY = 1000;
 
@@ -21,6 +23,7 @@ movements: [MAX_ENTITY]MovementComponent = undefined,
 textures: [MAX_ENTITY]TextureComponent = undefined,
 times: [MAX_ENTITY]TimeComponent = undefined,
 collisions: [MAX_ENTITY]CollisionComponent = undefined,
+healths: [MAX_ENTITY]HealthComponent = undefined,
 
 player: Entity = undefined,
 debug: Debug = Debug{},
@@ -81,5 +84,12 @@ pub fn runSystems(self: *@This()) void {
     InputSystem.run(self);
     TimeSystem.run(self, self.times[0..self.entityCount]);
     MovementSystem.run(self, self.transforms[0..self.entityCount], self.movements[0..self.entityCount], self.collisions[0..self.entityCount]);
-    RenderSystem.run(self, self.transforms[0..self.entityCount], self.textures[0..self.entityCount], self.collisions[0..self.entityCount]);
+    RenderSystem.run(
+        self,
+        self.transforms[0..self.entityCount],
+        self.textures[0..self.entityCount],
+        self.collisions[0..self.entityCount],
+        self.healths[0..self.entityCount],
+    );
+    HealthSystem.run(self, self.healths[0..self.entityCount]);
 }
