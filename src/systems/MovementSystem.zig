@@ -17,7 +17,7 @@ pub fn run(ecs: *Ecs, transforms: []TransformComponent, movements: []MovementCom
             const newPosition = Math.Vector2Add(transform.position, displacement);
 
             var gen_allocator = std.heap.GeneralPurposeAllocator(.{}){};
-            defer std.debug.assert(gen_allocator.deinit() == .ok);
+            defer std.debug.assert(!gen_allocator.deinit());
 
             var collided_with = std.ArrayList(u32).init(gen_allocator.allocator());
             defer collided_with.deinit();
