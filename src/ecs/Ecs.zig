@@ -93,7 +93,7 @@ pub fn createEntity(self: *@This(), components: anytype) u32 {
 }
 
 pub fn loadShaders(self: *@This()) void {
-    self.fragmentShader = c.LoadShader(0, @src().file ++ "../shaders/frag.glsl");
+    self.fragmentShader = c.LoadShader(0, "src/shaders/frag.glsl");
 }
 
 pub fn runSystems(self: *@This()) void {
