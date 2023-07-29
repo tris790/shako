@@ -14,6 +14,7 @@ const HealthComponent = @import("../components/HealthComponent.zig");
 ecs: Ecs = Ecs{},
 
 pub fn init(self: *@This()) void {
+    self.ecs.loadShaders();
     createPlayer(&self.ecs);
     createMonster(&self.ecs);
     createWall(&self.ecs);

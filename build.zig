@@ -4,7 +4,7 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
     const exe = b.addExecutable(.{
-        .name = "shako",
+        .name = "abyssal",
 
         .root_source_file = .{ .path = "src/main.zig" },
         .target = target,

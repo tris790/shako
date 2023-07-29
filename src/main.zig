@@ -6,7 +6,7 @@ pub fn main() !void {
     const screenWidth = 800;
     const screenHeight = 450;
 
-    c.InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    c.InitWindow(screenWidth, screenHeight, "Abyssal Depth");
     c.SetTargetFPS(60);
 
     var game = Game{};
