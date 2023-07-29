@@ -17,7 +17,6 @@ const RenderSystem = @import("../systems/RenderSystem.zig");
 const TimeSystem = @import("../systems/TimeSystem.zig");
 const HealthSystem = @import("../systems/HealthSystem.zig");
 const CameraSystem = @import("../systems/CameraSystem.zig");
-const DepthSystem = @import("../systems/DepthSystem.zig");
 
 const MAX_ENTITY = 1000;
 
@@ -94,7 +93,7 @@ pub fn createEntity(self: *@This(), components: anytype) u32 {
 }
 
 pub fn loadShaders(self: *@This()) void {
-    self.fragmentShader = c.LoadShader(0, "/home/nsa/repo/zig/abyssal/src/shaders/frag.glsl");
+    self.fragmentShader = c.LoadShader(0, @src().file ++ "../shaders/frag.glsl");
 }
 
 pub fn runSystems(self: *@This()) void {
@@ -103,7 +102,6 @@ pub fn runSystems(self: *@This()) void {
     TimeSystem.run(self, self.times[0..self.entityCount], &self.fragmentShader, self.deltaTime);
     MovementSystem.run(self, self.transforms[0..self.entityCount], self.movements[0..self.entityCount], self.collisions[0..self.entityCount]);
     HealthSystem.run(self, self.healths[0..self.entityCount]);
-    DepthSystem.run(self, &self.fragmentShader, self.transforms[0].position.y);
     CameraSystem.run(self, &self.camera, &self.transforms[0].position);
 
     RenderSystem.run(

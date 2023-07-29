@@ -76,6 +76,7 @@ fn renderUI(
     ecs: *Ecs,
     transforms: []TransformComponent,
 ) void {
+    _ = transforms;
     const window_height = c.GetScreenHeight();
     const window_width = c.GetScreenWidth();
     _ = window_width;
@@ -84,15 +85,6 @@ fn renderUI(
     const hotbar_element_y_offset = @intToFloat(f32, window_height) - hotbar_element_size.y - hotbar_element_padding;
 
     const padding = 10;
-
-    const depthMeter = @floatToInt(i32, transforms[0].position.y);
-    const depthMeterWidth = 150;
-    const depthMeterHeight = 75;
-    c.DrawRectangle(0, window_height - depthMeterHeight, depthMeterWidth, depthMeterHeight, c.Color{ .r = 75, .g = 75, .b = 75, .a = 100 });
-
-    var depthMeterString: [100]u8 = std.mem.zeroes([100]u8);
-    const depthMeter_slice = std.fmt.bufPrint(&depthMeterString, "Depth: {}ft", .{depthMeter}) catch unreachable;
-    c.DrawText(depthMeter_slice.ptr, padding, window_height - depthMeterHeight + padding, 20, c.BLACK);
 
     var hotbar_index: u8 = 0;
     while (hotbar_index < ecs.hud.hotbarItems.len) {
