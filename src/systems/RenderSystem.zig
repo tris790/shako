@@ -65,8 +65,8 @@ fn renderComponents(
             }
 
             if (health.health > 0) {
-                const health_ratio_left = @intToFloat(f32, health.health) / @intToFloat(f32, health.totalHealth);
-                c.DrawRectangleV(transform.position, c.Vector2{ .x = health_ratio_left * 100, .y = 10 }, HP_COLORS[@boolToInt(health_ratio_left > 0.3)]);
+                const health_ratio_left = @as(f32, @floatFromInt(health.health)) / @as(f32, @floatFromInt(health.totalHealth));
+                c.DrawRectangleV(transform.position, c.Vector2{ .x = health_ratio_left * 100, .y = 10 }, HP_COLORS[@intFromBool(health_ratio_left > 0.3)]);
             }
         }
     }
@@ -82,17 +82,17 @@ fn renderUI(
     _ = window_width;
     const hotbar_element_padding = 5.0;
     const hotbar_element_size = c.Vector2{ .x = 20, .y = 20 };
-    const hotbar_element_y_offset = @intToFloat(f32, window_height) - hotbar_element_size.y - hotbar_element_padding;
+    const hotbar_element_y_offset = @as(f32, @floatFromInt(window_height)) - hotbar_element_size.y - hotbar_element_padding;
 
     const padding = 10;
 
     var hotbar_index: u8 = 0;
     while (hotbar_index < ecs.hud.hotbarItems.len) {
-        const hotbar_element_x_offset = @intToFloat(f32, hotbar_index) * (hotbar_element_size.x + hotbar_element_padding);
+        const hotbar_element_x_offset = @as(f32, @floatFromInt(hotbar_index)) * (hotbar_element_size.x + hotbar_element_padding);
         c.DrawRectangleV(
             c.Vector2{ .x = hotbar_element_x_offset, .y = hotbar_element_y_offset },
             hotbar_element_size,
-            HOTBAR_COLORS[@boolToInt(hotbar_index == ecs.hud.selectedHotbarIndex)],
+            HOTBAR_COLORS[@intFromBool(hotbar_index == ecs.hud.selectedHotbarIndex)],
         );
 
         hotbar_index += 1;

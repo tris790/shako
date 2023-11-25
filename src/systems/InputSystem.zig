@@ -23,16 +23,16 @@ pub fn hasPressedSpecialAbility() bool {
 }
 
 pub fn movementDirection() c.Vector2 {
-    const right = @intCast(i32, @boolToInt(c.IsKeyDown(c.KEY_D)));
-    const left = @intCast(i32, @boolToInt(c.IsKeyDown(c.KEY_A)));
-    const up = @intCast(i32, @boolToInt(c.IsKeyDown(c.KEY_W)));
-    const down = @intCast(i32, @boolToInt(c.IsKeyDown(c.KEY_S)));
-    const x = right - left;
-    const y = down - up;
+    const right: i32 = @intFromBool(c.IsKeyDown(c.KEY_D));
+    const left: i32 = @intFromBool(c.IsKeyDown(c.KEY_A));
+    const up: i32 = @intFromBool(c.IsKeyDown(c.KEY_W));
+    const down: i32 = @intFromBool(c.IsKeyDown(c.KEY_S));
+    const x: i32 = right - left;
+    const y: i32 = down - up;
 
     return c.Vector2{
-        .x = @intToFloat(f32, x),
-        .y = @intToFloat(f32, y),
+        .x = @floatFromInt(x),
+        .y = @floatFromInt(y),
     };
 }
 
@@ -76,10 +76,10 @@ pub fn run(ecs: *Ecs) void {
                 const colors = [_]c.Color{ c.PINK, c.GREEN };
                 const full_circle_rad = 2 * std.math.pi;
                 var remaining_projectiles: u32 = 10;
-                const angle_step = full_circle_rad / @intToFloat(f32, remaining_projectiles);
+                const angle_step = full_circle_rad / @as(f32, @floatFromInt(remaining_projectiles));
 
                 while (remaining_projectiles > 0) {
-                    const angle = angle_step * @intToFloat(f32, remaining_projectiles);
+                    const angle = angle_step * @as(f32, @floatFromInt(remaining_projectiles));
                     const opposite = std.math.sin(angle);
                     const adjacent = std.math.cos(angle);
                     const direction = c.Vector2{
