@@ -10,6 +10,7 @@ const TimeComponent = @import("../components/TimeComponent.zig");
 const CollisionComponent = @import("../components/CollisionComponent.zig");
 const HealthComponent = @import("../components/HealthComponent.zig");
 const HudComponent = @import("../components/HudComponent.zig");
+const InventoryComponent = @import("../components/InventoryComponent.zig");
 
 const InputSystem = @import("../systems/InputSystem.zig");
 const MovementSystem = @import("../systems/MovementSystem.zig");
@@ -31,6 +32,7 @@ healths: [MAX_ENTITY]HealthComponent = undefined,
 player: Entity = undefined,
 debug: Debug = Debug{},
 hud: HudComponent = HudComponent{},
+inventory: InventoryComponent = InventoryComponent{},
 camera: c.Camera2D = c.Camera2D{
     .target = c.Vector2{ .x = 0.0, .y = 0.0 },
     .offset = c.Vector2{ .x = 0, .y = 0 },
@@ -112,5 +114,6 @@ pub fn runSystems(self: *@This()) void {
         self.healths[0..self.entityCount],
         &self.camera,
         &self.fragmentShader,
+        &self.inventory,
     );
 }

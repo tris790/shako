@@ -22,6 +22,10 @@ pub fn hasPressedSpecialAbility() bool {
     return c.IsKeyPressed(c.KEY_V);
 }
 
+pub fn isOpeningInventory() bool {
+    return c.IsKeyPressed(c.KEY_I);
+}
+
 pub fn movementDirection() c.Vector2 {
     const right: i32 = @intFromBool(c.IsKeyDown(c.KEY_D));
     const left: i32 = @intFromBool(c.IsKeyDown(c.KEY_A));
@@ -133,5 +137,9 @@ pub fn run(ecs: *Ecs) void {
         } else {
             ecs.hud.selectedHotbarIndex += 1;
         }
+    }
+
+    if (isOpeningInventory()) {
+        ecs.inventory.opened = !ecs.inventory.opened;
     }
 }

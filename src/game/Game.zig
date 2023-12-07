@@ -10,6 +10,7 @@ const CollisionComponent = @import("../components/CollisionComponent.zig");
 const TransformComponent = @import("../components/TransformComponent.zig");
 const MovementComponent = @import("../components/MovementComponent.zig");
 const HealthComponent = @import("../components/HealthComponent.zig");
+const InventoryComponent = @import("../components/InventoryComponent.zig");
 
 ecs: Ecs = Ecs{},
 
@@ -18,6 +19,7 @@ pub fn init(self: *@This()) void {
     createPlayer(&self.ecs);
     createMonster(&self.ecs);
     createWall(&self.ecs);
+    createInventory(&self.ecs);
 }
 
 pub fn simulate(self: *@This()) void {
@@ -77,4 +79,8 @@ fn createWall(ecs: *Ecs) void {
     };
     const wall_texture_component = TextureComponent{ .color = c.BLACK, .shape = Shape.Rectangle };
     _ = ecs.createEntity(.{ wall_transform_component, wall_texture_component, wall_collision_component });
+}
+
+fn createInventory(ecs: *Ecs) void {
+    _ = ecs;
 }

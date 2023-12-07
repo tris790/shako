@@ -8,6 +8,7 @@ const TextureComponent = @import("../components/TextureComponent.zig");
 const TransformComponent = @import("../components/TransformComponent.zig");
 const CollisionComponent = @import("../components/CollisionComponent.zig");
 const HealthComponent = @import("../components/HealthComponent.zig");
+const InventoryComponent = @import("../components/InventoryComponent.zig");
 
 const HP_COLORS = [_]c.Color{ c.RED, c.GREEN };
 const HOTBAR_COLORS = [_]c.Color{ c.RED, c.BLUE };
@@ -20,6 +21,7 @@ pub fn run(
     healths: []HealthComponent,
     camera: *c.Camera2D,
     fragmentShader: *c.Shader,
+    inventory: *InventoryComponent,
 ) void {
     c.BeginDrawing();
     {
@@ -36,6 +38,8 @@ pub fn run(
         c.EndShaderMode();
 
         renderUI(ecs, transforms);
+
+        renderInventory(ecs, inventory);
     }
     c.EndDrawing();
 }
@@ -102,4 +106,51 @@ fn renderUI(
     var framerate_string: [100]u8 = std.mem.zeroes([100]u8);
     const framerate_string_slice = std.fmt.bufPrint(&framerate_string, "FrameTime {}", .{fps}) catch unreachable;
     c.DrawText(framerate_string_slice.ptr, padding, padding, 30, c.BLACK);
+}
+
+fn renderInventory(ecs: *Ecs, inventory: *InventoryComponent) void {
+    _ = ecs;
+    if (!inventory.opened) return;
+
+    const width = 500;
+    const height = 300;
+    const inventory_slot_width = 50;
+    const inventory_slot_height = 50;
+    const inventory_slot_spacing = 10;
+
+    const window_width = c.GetScreenWidth();
+    const window_height = c.GetScreenHeight();
+    const inventory_pos = centerElement(width, height, window_width, window_height);
+    c.DrawRectangle(inventory_pos[0], inventory_pos[1], width, height, c.GRAY);
+
+    var index: u8 = 0;
+    for (inventory.items) |item| {
+        _ = item;
+        const item_pos = centerElementRelative(inventory_slot_width, inventory_slot_height, inventory_slot_width, inventory_slot_height, inventory_pos);
+
+        c.DrawRectangle(
+            item_pos[0],
+            index * (inventory_slot_height + inventory_slot_spacing) + inventory_pos[1],
+            inventory_slot_width,
+            inventory_slot_height,
+            c.RED,
+        );
+        index += 1;
+    }
+}
+
+fn centerElement(width: c_int, height: c_int, container_width: c_int, container_height: c_int) [2]c_int {
+    const x: f32 = @floatFromInt(container_width - width);
+    const y: f32 = @floatFromInt(container_height - height);
+    const half_x: c_int = @intFromFloat(x / 2.0);
+    const half_y: c_int = @intFromFloat(y / 2.0);
+    return .{ half_x, half_y };
+}
+
+fn centerElementRelative(width: c_int, height: c_int, container_width: c_int, container_height: c_int, relativeTo: [2]c_int) [2]c_int {
+    const pos = centerElement(width, height, container_width, container_height);
+    return .{
+        (pos[0] + relativeTo[0]),
+        (pos[1] + relativeTo[1]),
+    };
 }
