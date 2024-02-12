@@ -1,11 +1,11 @@
 .{
     .name = "raylib",
-    .version = "0.1.0",
-    .paths = .{"src"},
+    .version = "0.5.0",
+    .paths = .{""},
     .dependencies = .{
         .raylib = .{
-            .url = "https://github.com/raysan5/raylib/archive/ae50bfa2cc569c0f8d5bc4315d39db64005b1b08.tar.gz",
-            .hash = "1220c28847ca8e8756734ae84355802b764c9d9cf4de057dbc6fc2b15c56e726f27b",
+            .url = "https://github.com/raysan5/raylib/archive/4cd71a975086fa3be3b28d765e45c4bb7dc4e101.tar.gz",
+            .hash = "1220218d3958e4b46293456abc189ec98e8a7e3add6a46550b852bc0952609805315",
         },
     },
 }
