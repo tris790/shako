@@ -5,7 +5,7 @@
             "name": "(lldb) Launch",
             "type": "lldb",
             "request": "launch",
-            "program": "./zig-out/bin/abyssal",
+            "program": "./zig-out/bin/shako",
             "args": [],
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "build",

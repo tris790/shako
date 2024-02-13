@@ -42,4 +42,8 @@ pub fn build(b: *std.Build) void {
 
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_unit_tests.step);
+
+    const download_assets = b.addSystemCommand(&.{ "curl", "https://" });
+    const download_assets_step = b.step("assets", "Download assets");
+    download_assets_step.dependOn(&download_assets.step);
 }

@@ -4,7 +4,7 @@ const c = @cImport(@cInclude("raylib.h"));
 const Ecs = @import("../ecs/Ecs.zig");
 
 const TransformComponent = @import("../components/TransformComponent.zig");
-const TextureComponent = @import("../components/TextureComponent.zig");
+const ShapeComponent = @import("../components/ShapeComponent.zig");
 const MovementComponent = @import("../components/MovementComponent.zig");
 const Projectile = @import("../game/Projectile.zig");
 const AbilityKind = @import("../game/Ability.zig").AbilityKind;
@@ -58,7 +58,7 @@ pub fn run(ecs: *Ecs) void {
     }
 
     if (isShooting()) {
-        const texture = TextureComponent{ .color = c.BLACK };
+        const texture = ShapeComponent{ .color = c.BLACK };
         Projectile.spawn(
             ecs,
             transform_component.position,
@@ -92,7 +92,7 @@ pub fn run(ecs: *Ecs) void {
                     };
 
                     const color_index = remaining_projectiles % colors.len;
-                    const texture = TextureComponent{ .color = colors[color_index] };
+                    const texture = ShapeComponent{ .color = colors[color_index] };
                     Projectile.spawn(
                         ecs,
                         transform_component.position,
@@ -106,7 +106,7 @@ pub fn run(ecs: *Ecs) void {
                 }
             },
             .MassiveShot => {
-                const texture = TextureComponent{ .color = c.BLACK };
+                const texture = ShapeComponent{ .color = c.BLACK };
                 Projectile.spawn(
                     ecs,
                     transform_component.position,

@@ -3,12 +3,14 @@ const c = @cImport(@cInclude("raylib.h"));
 
 const Ecs = @import("../ecs/Ecs.zig");
 const Shape = @import("../game/Shapes.zig").Shape;
+const Asset = @import("../game/Asset.zig");
 
-const TextureComponent = @import("../components/TextureComponent.zig");
+const ShapeComponent = @import("../components/ShapeComponent.zig");
 const TransformComponent = @import("../components/TransformComponent.zig");
 const CollisionComponent = @import("../components/CollisionComponent.zig");
 const HealthComponent = @import("../components/HealthComponent.zig");
 const InventoryComponent = @import("../components/InventoryComponent.zig");
+const RenderComponent = @import("../components/RenderComponent.zig");
 
 const HP_COLORS = [_]c.Color{ c.RED, c.GREEN };
 const HOTBAR_COLORS = [_]c.Color{ c.RED, c.BLUE };
@@ -16,23 +18,26 @@ const HOTBAR_COLORS = [_]c.Color{ c.RED, c.BLUE };
 pub fn run(
     ecs: *Ecs,
     transforms: []TransformComponent,
-    textures: []TextureComponent,
+    shapes: []ShapeComponent,
     collisions: []CollisionComponent,
     healths: []HealthComponent,
     camera: *c.Camera2D,
     fragmentShader: *c.Shader,
     inventory: *InventoryComponent,
+    renders: []RenderComponent,
 ) void {
     c.BeginDrawing();
     {
         c.ClearBackground(c.RAYWHITE);
-
+        // TODO TD: We need a shader for shaped and one for textures I think
         c.BeginShaderMode(fragmentShader.*);
         c.DrawRectangle(0.0, 0.0, c.GetScreenWidth(), c.GetScreenHeight(), c.WHITE);
 
         c.BeginMode2D(camera.*);
 
-        renderComponents(ecs, transforms, textures, collisions, healths, camera, fragmentShader);
+        renderShapes(ecs, transforms, shapes, collisions, healths);
+        _ = renders;
+        // renderComponents(ecs, transforms, collisions, renders);
 
         c.EndMode2D();
         c.EndShaderMode();
@@ -44,18 +49,14 @@ pub fn run(
     c.EndDrawing();
 }
 
-fn renderComponents(
+fn renderShapes(
     ecs: *Ecs,
     transforms: []TransformComponent,
-    textures: []TextureComponent,
+    shapes: []ShapeComponent,
     collisions: []CollisionComponent,
     healths: []HealthComponent,
-    camera: *c.Camera2D,
-    fragmentShader: *c.Shader,
 ) void {
-    _ = fragmentShader;
-    _ = camera;
-    for (transforms, textures, collisions, healths) |transform, texture, *collision, health| {
+    for (transforms, shapes, collisions, healths) |transform, shape, *collision, health| {
         if (transform.world_id >= 0) {
             if (ecs.debug.render_hitboxes) {
                 const hitbox_position = collision.addPositionToHitbox(transform.position);
@@ -63,14 +64,36 @@ fn renderComponents(
                 c.DrawRectangleRec(hitbox, c.YELLOW);
             }
 
-            switch (texture.shape) {
-                .Circle => c.DrawCircleV(transform.position, transform.scale.x, texture.color),
-                .Rectangle => c.DrawRectangleV(transform.position, transform.scale, texture.color),
+            switch (shape.shape) {
+                .Circle => c.DrawCircleV(transform.position, transform.scale.x, shape.color),
+                .Rectangle => c.DrawRectangleV(transform.position, transform.scale, shape.color),
             }
 
             if (health.health > 0) {
                 const health_ratio_left = @as(f32, @floatFromInt(health.health)) / @as(f32, @floatFromInt(health.totalHealth));
                 c.DrawRectangleV(transform.position, c.Vector2{ .x = health_ratio_left * 100, .y = 10 }, HP_COLORS[@intFromBool(health_ratio_left > 0.3)]);
+            }
+        }
+    }
+}
+
+fn renderComponents(
+    ecs: *Ecs,
+    transforms: []TransformComponent,
+    collisions: []CollisionComponent,
+    renders: []RenderComponent,
+) void {
+    for (transforms, renders, collisions) |transform, render, *collision| {
+        if (transform.world_id >= 0) {
+            if (ecs.debug.render_hitboxes) {
+                const hitbox_position = collision.addPositionToHitbox(transform.position);
+                const hitbox = c.Rectangle{ .x = hitbox_position.x, .y = hitbox_position.y, .width = collision.hitbox.width, .height = collision.hitbox.height };
+                c.DrawRectangleRec(hitbox, c.YELLOW);
+            }
+
+            if (render.asset_id > 0) {
+                const asset: Asset = ecs.assets.items[render.asset_id];
+                c.DrawTextureV(asset.data, transform.position, c.WHITE);
             }
         }
     }

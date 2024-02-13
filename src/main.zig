@@ -9,7 +9,10 @@ pub fn main() !void {
     c.InitWindow(screenWidth, screenHeight, "Shako");
     c.SetTargetFPS(60);
 
-    var game = Game{};
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena.deinit();
+
+    var game = Game{ .allocator = arena.allocator() };
     game.init();
 
     while (!c.WindowShouldClose()) {

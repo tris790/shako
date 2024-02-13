@@ -1,16 +1,19 @@
 const std = @import("std");
 const Entity = @import("Entity.zig");
 const Debug = @import("../game/Debug.zig");
+const Asset = @import("../game/Asset.zig");
+const Allocator = std.mem.Allocator;
 const c = @cImport(@cInclude("raylib.h"));
 
 const MovementComponent = @import("../components/MovementComponent.zig");
-const TextureComponent = @import("../components/TextureComponent.zig");
+const ShapeComponent = @import("../components/ShapeComponent.zig");
 const TransformComponent = @import("../components/TransformComponent.zig");
 const TimeComponent = @import("../components/TimeComponent.zig");
 const CollisionComponent = @import("../components/CollisionComponent.zig");
 const HealthComponent = @import("../components/HealthComponent.zig");
 const HudComponent = @import("../components/HudComponent.zig");
 const InventoryComponent = @import("../components/InventoryComponent.zig");
+const RenderComponent = @import("../components/RenderComponent.zig");
 
 const InputSystem = @import("../systems/InputSystem.zig");
 const MovementSystem = @import("../systems/MovementSystem.zig");
@@ -24,10 +27,11 @@ const MAX_ENTITY = 1000;
 entityCount: u32 = 0,
 transforms: [MAX_ENTITY]TransformComponent = undefined,
 movements: [MAX_ENTITY]MovementComponent = undefined,
-textures: [MAX_ENTITY]TextureComponent = undefined,
+shapes: [MAX_ENTITY]ShapeComponent = undefined,
 times: [MAX_ENTITY]TimeComponent = undefined,
 collisions: [MAX_ENTITY]CollisionComponent = undefined,
 healths: [MAX_ENTITY]HealthComponent = undefined,
+renders: [MAX_ENTITY]RenderComponent = undefined,
 
 player: Entity = undefined,
 debug: Debug = Debug{},
@@ -41,9 +45,12 @@ camera: c.Camera2D = c.Camera2D{
 },
 fragmentShader: c.Shader = undefined,
 deltaTime: f32 = 0,
+assets: std.ArrayList(Asset) = undefined,
 
-pub fn getComponent(self: *@This(), comptime T: type, entity_id: u64) *T {
-    const selfFields = @typeInfo(@This()).Struct.fields;
+const Ecs = @This();
+
+pub fn getComponent(self: *Ecs, comptime T: type, entity_id: u64) *T {
+    const selfFields = @typeInfo(Ecs).Struct.fields;
 
     inline for (selfFields) |f| {
         const fieldTypeInfo = @typeInfo(f.type);
@@ -55,8 +62,8 @@ pub fn getComponent(self: *@This(), comptime T: type, entity_id: u64) *T {
     }
 }
 
-pub fn getAllComponents(self: *@This(), comptime T: type) []T {
-    const selfFields = @typeInfo(@This()).Struct.fields;
+pub fn getAllComponents(self: *Ecs, comptime T: type) []T {
+    const selfFields = @typeInfo(Ecs).Struct.fields;
 
     inline for (selfFields) |f| {
         const fieldTypeInfo = @typeInfo(f.type);
@@ -68,7 +75,7 @@ pub fn getAllComponents(self: *@This(), comptime T: type) []T {
     }
 }
 
-pub fn createEntity(self: *@This(), components: anytype) u32 {
+pub fn createEntity(self: *Ecs, components: anytype) u32 {
     const newEntityId = self.entityCount;
     if (self.entityCount < MAX_ENTITY - 1) {
         self.entityCount = newEntityId + 1;
@@ -79,7 +86,7 @@ pub fn createEntity(self: *@This(), components: anytype) u32 {
     const componentsTypes = @typeInfo(@TypeOf(components)).Struct.fields;
 
     inline for (componentsTypes) |component| {
-        const ecsFields = @typeInfo(@This()).Struct.fields;
+        const ecsFields = @typeInfo(Ecs).Struct.fields;
 
         inline for (ecsFields) |f| {
             const ecsField = @typeInfo(f.type);
@@ -94,11 +101,15 @@ pub fn createEntity(self: *@This(), components: anytype) u32 {
     return newEntityId;
 }
 
-pub fn loadShaders(self: *@This()) void {
+pub fn loadShaders(self: *Ecs) void {
     self.fragmentShader = c.LoadShader(0, "src/shaders/frag.glsl");
 }
 
-pub fn runSystems(self: *@This()) void {
+pub fn loadAssets(self: *Ecs, allocator: Allocator) void {
+    self.assets = Asset.load_all_assets(allocator);
+}
+
+pub fn runSystems(self: *Ecs) void {
     self.deltaTime += c.GetFrameTime();
     InputSystem.run(self);
     TimeSystem.run(self, self.times[0..self.entityCount], &self.fragmentShader, self.deltaTime);
@@ -109,11 +120,12 @@ pub fn runSystems(self: *@This()) void {
     RenderSystem.run(
         self,
         self.transforms[0..self.entityCount],
-        self.textures[0..self.entityCount],
+        self.shapes[0..self.entityCount],
         self.collisions[0..self.entityCount],
         self.healths[0..self.entityCount],
         &self.camera,
         &self.fragmentShader,
         &self.inventory,
+        self.renders[0..self.entityCount],
     );
 }
