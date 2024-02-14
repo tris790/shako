@@ -36,8 +36,7 @@ pub fn run(
         c.BeginMode2D(camera.*);
 
         renderShapes(ecs, transforms, shapes, collisions, healths);
-        _ = renders;
-        // renderComponents(ecs, transforms, collisions, renders);
+        renderComponents(ecs, transforms, collisions, renders);
 
         c.EndMode2D();
         c.EndShaderMode();

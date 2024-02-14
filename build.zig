@@ -11,6 +11,19 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    const assets_dep = b.dependency("assets", .{
+        .target = target,
+        .optimize = optimize,
+    });
+    const assets_path = assets_dep.path(".");
+    const assets_install_dir = b.addInstallDirectory(.{
+        .source_dir = assets_path,
+        .install_dir = .{ .bin = {} },
+        .install_subdir = "assets",
+        .exclude_extensions = &.{},
+    });
+    b.default_step.dependOn(&assets_install_dir.step);
+
     const raylib_dep = b.dependency("raylib", .{
         .target = target,
         .optimize = optimize,
@@ -42,8 +55,4 @@ pub fn build(b: *std.Build) void {
 
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_unit_tests.step);
-
-    const download_assets = b.addSystemCommand(&.{ "curl", "https://" });
-    const download_assets_step = b.step("assets", "Download assets");
-    download_assets_step.dependOn(&download_assets.step);
 }

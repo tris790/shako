@@ -21,12 +21,14 @@ pub fn load_asset(file_path: []const u8) Asset {
 }
 
 pub fn load_all_assets(allocator: Allocator) std.ArrayList(Asset) {
-    const asset_folder = std.fs.cwd().openDir("assets", .{ .iterate = true, .access_sub_paths = true }) catch unreachable;
+    const exe_folder_path = std.fs.selfExeDirPathAlloc(allocator) catch unreachable;
+    const exe_folder = std.fs.openDirAbsolute(exe_folder_path, .{}) catch unreachable;
+    const assets_folder = exe_folder.openDir("assets", .{ .iterate = true, .access_sub_paths = true }) catch unreachable;
 
     var assets = std.ArrayList(Asset).init(allocator);
-    const asset_folder_name = asset_folder.realpathAlloc(allocator, ".") catch unreachable;
+    const asset_folder_name = assets_folder.realpathAlloc(allocator, ".") catch unreachable;
 
-    var it = asset_folder.iterate();
+    var it = assets_folder.iterate();
     while (it.next() catch unreachable) |*entry| {
         if (entry.kind == .file) {
             const file_path = std.mem.concat(allocator, u8, &.{ asset_folder_name, "/", entry.name, &.{0} }) catch unreachable;
