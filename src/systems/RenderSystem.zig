@@ -1,5 +1,5 @@
 const std = @import("std");
-const c = @cImport(@cInclude("raylib.h"));
+const c = @import("../c.zig");
 
 const Ecs = @import("../ecs/Ecs.zig");
 const Shape = @import("../game/Shapes.zig").Shape;

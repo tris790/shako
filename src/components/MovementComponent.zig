@@ -1,4 +1,4 @@
-const c = @cImport(@cInclude("raylib.h"));
+const c = @import("../c.zig");
 
 direction: c.Vector2 = c.Vector2{ .x = 0, .y = 0 },
 last_direction: c.Vector2 = c.Vector2{ .x = 1, .y = 0 },

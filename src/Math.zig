@@ -1,4 +1,4 @@
-const c = @cImport(@cInclude("raylib.h"));
+const c = @import("c.zig");
 
 pub extern fn Vector2Add(v1: c.Vector2, v2: c.Vector2) c.Vector2;
 pub extern fn Vector2AddValue(v: c.Vector2, add: f32) c.Vector2;

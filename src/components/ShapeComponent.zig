@@ -1,4 +1,4 @@
-const c = @cImport(@cInclude("raylib.h"));
+const c = @import("../c.zig");
 const Shape = @import("../game/Shapes.zig").Shape;
 
 color: c.Color = c.MAROON,

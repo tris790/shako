@@ -1,4 +1,4 @@
-const c = @cImport(@cInclude("raylib.h"));
+const c = @import("../c.zig");
 
 ignore: u8,
 is_solid: bool = true,
