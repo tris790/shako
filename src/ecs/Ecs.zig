@@ -3,7 +3,7 @@ const Entity = @import("Entity.zig");
 const Debug = @import("../game/Debug.zig");
 const Asset = @import("../game/Asset.zig");
 const Allocator = std.mem.Allocator;
-const c = @cImport(@cInclude("raylib.h"));
+const c = @import("../c.zig");
 
 const MovementComponent = @import("../components/MovementComponent.zig");
 const ShapeComponent = @import("../components/ShapeComponent.zig");

@@ -1,6 +1,6 @@
 const std = @import("std");
 
-const c = @cImport(@cInclude("raylib.h"));
+const c = @import("../c.zig");
 const Ecs = @import("../ecs/Ecs.zig");
 const MovementComponent = @import("../components/MovementComponent.zig");
 const TransformComponent = @import("../components/TransformComponent.zig");

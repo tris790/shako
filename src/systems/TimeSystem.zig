@@ -1,4 +1,4 @@
-const c = @cImport(@cInclude("raylib.h"));
+const c = @import("../c.zig");
 const Ecs = @import("../ecs/Ecs.zig");
 const TimeComponent = @import("../components/TimeComponent.zig");
 

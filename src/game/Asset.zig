@@ -1,5 +1,5 @@
 const std = @import("std");
-const c = @cImport(@cInclude("raylib.h"));
+const c = @import("../c.zig");
 
 const Allocator = std.mem.Allocator;
 

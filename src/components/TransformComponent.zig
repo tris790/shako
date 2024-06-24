@@ -1,4 +1,4 @@
-const c = @cImport(@cInclude("raylib.h"));
+const c = @import("../c.zig");
 
 position: c.Vector2,
 scale: c.Vector2,
