@@ -8,8 +8,8 @@
             .hash = "12207674049e546079e33753ee8cca26f08759cc2fe33bbda4b7a712c0ac0c0c0f50",
         },
         .raylib = .{
-            .url = "https://github.com/raysan5/raylib/archive/4cd71a975086fa3be3b28d765e45c4bb7dc4e101.tar.gz",
-            .hash = "1220218d3958e4b46293456abc189ec98e8a7e3add6a46550b852bc0952609805315",
+            .url = "https://github.com/raysan5/raylib/archive/ec95ee85a386db29f059b9738cd5ec9329f1661e.tar.gz",
+            .hash = "1220ef5d947d0bb41d19fe32f4308143bdd650038f9f439e4366bca9e97e7e46ec84",
         },
     },
 }
