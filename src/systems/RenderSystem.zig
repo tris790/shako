@@ -4,6 +4,7 @@ const c = @import("../c.zig");
 const Ecs = @import("../ecs/Ecs.zig");
 const Shape = @import("../game/Shapes.zig").Shape;
 const Asset = @import("../game/Asset.zig");
+const Ui = @import("../ui/Ui.zig");
 
 const ShapeComponent = @import("../components/ShapeComponent.zig");
 const TransformComponent = @import("../components/TransformComponent.zig");
@@ -21,11 +22,13 @@ pub fn run(
     shapes: []ShapeComponent,
     collisions: []CollisionComponent,
     healths: []HealthComponent,
-    camera: *c.Camera2D,
+    camera: *c.Camera3D,
     fragmentShader: *c.Shader,
     inventory: *InventoryComponent,
     renders: []RenderComponent,
 ) void {
+    _ = shapes;
+    _ = healths;
     c.BeginDrawing();
     {
         c.ClearBackground(c.RAYWHITE);
@@ -33,17 +36,18 @@ pub fn run(
         c.BeginShaderMode(fragmentShader.*);
         c.DrawRectangle(0.0, 0.0, c.GetScreenWidth(), c.GetScreenHeight(), c.WHITE);
 
-        c.BeginMode2D(camera.*);
+        c.BeginMode3D(camera.*);
 
-        renderShapes(ecs, transforms, shapes, collisions, healths);
+        c.DrawPlane(c.Vector3{ .x = 0, .y = 0, .z = 0 }, c.Vector2{ .x = 1000, .y = 1000 }, c.GRAY);
         renderComponents(ecs, transforms, collisions, renders);
+        // renderShapes(ecs, transforms, shapes, collisions, healths);
 
-        c.EndMode2D();
+        c.EndMode3D();
         c.EndShaderMode();
 
         renderUI(ecs, transforms);
-
         renderInventory(ecs, inventory);
+        // renderUi2();
     }
     c.EndDrawing();
 }
@@ -59,18 +63,29 @@ fn renderShapes(
         if (transform.world_id >= 0) {
             if (ecs.debug.render_hitboxes) {
                 const hitbox_position = collision.addPositionToHitbox(transform.position);
-                const hitbox = c.Rectangle{ .x = hitbox_position.x, .y = hitbox_position.y, .width = collision.hitbox.width, .height = collision.hitbox.height };
-                c.DrawRectangleRec(hitbox, c.YELLOW);
+                c.DrawCube(hitbox_position, collision.hitbox.width, 1, collision.hitbox.height, c.YELLOW);
             }
 
             switch (shape.shape) {
-                .Circle => c.DrawCircleV(transform.position, transform.scale.x, shape.color),
-                .Rectangle => c.DrawRectangleV(transform.position, transform.scale, shape.color),
+                .Circle => c.DrawSphere(
+                    transform.position,
+                    transform.scale.x,
+                    shape.color,
+                ),
+                .Rectangle => c.DrawCubeV(
+                    transform.position,
+                    transform.scale,
+                    shape.color,
+                ),
             }
 
             if (health.health > 0) {
                 const health_ratio_left = @as(f32, @floatFromInt(health.health)) / @as(f32, @floatFromInt(health.totalHealth));
-                c.DrawRectangleV(transform.position, c.Vector2{ .x = health_ratio_left * 100, .y = 10 }, HP_COLORS[@intFromBool(health_ratio_left > 0.3)]);
+                c.DrawRectangleV(
+                    c.Vector2{ .x = transform.position.x, .y = transform.position.z },
+                    c.Vector2{ .x = health_ratio_left * 100, .y = 10 },
+                    HP_COLORS[@intFromBool(health_ratio_left > 0.3)],
+                );
             }
         }
     }
@@ -86,13 +101,15 @@ fn renderComponents(
         if (transform.world_id >= 0) {
             if (ecs.debug.render_hitboxes) {
                 const hitbox_position = collision.addPositionToHitbox(transform.position);
-                const hitbox = c.Rectangle{ .x = hitbox_position.x, .y = hitbox_position.y, .width = collision.hitbox.width, .height = collision.hitbox.height };
+                const hitbox = c.Rectangle{ .x = hitbox_position.x, .y = hitbox_position.z, .width = collision.hitbox.width, .height = collision.hitbox.height };
                 c.DrawRectangleRec(hitbox, c.YELLOW);
             }
 
             if (render.asset_id > 0) {
                 const asset: Asset = ecs.assets.items[render.asset_id];
-                c.DrawTextureV(asset.data, transform.position, c.WHITE);
+                if (asset.data == Asset.AssetType.model) {
+                    c.DrawModel(asset.data.model, transform.position, transform.scale.x, c.WHITE);
+                }
             }
         }
     }
@@ -159,6 +176,10 @@ fn renderInventory(ecs: *Ecs, inventory: *InventoryComponent) void {
         );
         index += 1;
     }
+}
+
+fn renderUi2() void {
+    Ui.render();
 }
 
 fn centerElement(width: c_int, height: c_int, container_width: c_int, container_height: c_int) [2]c_int {

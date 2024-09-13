@@ -3,15 +3,14 @@ const c = @import("../c.zig");
 
 const Ecs = @import("../ecs/Ecs.zig");
 
-pub fn run(ecs: *Ecs, camera: *c.Camera2D, target: *c.Vector2) void {
+const CAMERA_OFFSET = 500;
+
+pub fn run(ecs: *Ecs, camera: *c.Camera3D, target: *c.Vector3) void {
     _ = ecs;
-    const camera_position_x: f32 = @as(f32, @floatFromInt(c.GetScreenWidth())) / 2.0;
-    const camera_position_y: f32 = @as(f32, @floatFromInt(c.GetScreenHeight())) / 2.0;
+    camera.position.x = target.x;
+    camera.position.y = target.y + CAMERA_OFFSET;
+    camera.position.z = target.z + CAMERA_OFFSET;
     camera.target = target.*;
-    camera.offset = c.Vector2{
-        .x = camera_position_x,
-        .y = camera_position_y,
-    };
-    // camera.rotation = 0.0;
-    // camera.zoom = 1.0f;
+
+    // c.UpdateCamera(camera, c.CAMERA_FREE);
 }

@@ -8,8 +8,10 @@ pub fn main() !void {
     const screenWidth = 800;
     const screenHeight = 450;
 
+    c.SetTraceLogLevel(c.LOG_ERROR);
+
     c.InitWindow(screenWidth, screenHeight, "Shako");
-    c.SetTargetFPS(60);
+    c.SetTargetFPS(120);
 
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena.deinit();

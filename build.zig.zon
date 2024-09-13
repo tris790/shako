@@ -5,7 +5,7 @@
     .dependencies = .{
         .assets = .{
             .url = "https://drive.usercontent.google.com/download?id=1qDVKiDqqA_9g-N60_GG33ueAeVQ5xi92&export=download",
-            .hash = "12207674049e546079e33753ee8cca26f08759cc2fe33bbda4b7a712c0ac0c0c0f50",
+            .hash = "1220c8134e39f72d282498c4d44f533aa06894cab7dadd424decd1ff011683260f6e",
         },
         .raylib = .{
             .url = "https://github.com/raysan5/raylib/archive/ec95ee85a386db29f059b9738cd5ec9329f1661e.tar.gz",

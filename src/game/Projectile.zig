@@ -7,7 +7,7 @@ const TransformComponent = @import("../components/TransformComponent.zig");
 const ShapeComponent = @import("../components/ShapeComponent.zig");
 const CollisionComponent = @import("../components/CollisionComponent.zig");
 
-pub fn spawn(ecs: *Ecs, position: c.Vector2, direction: c.Vector2, velocity: c.Vector2, texture: ShapeComponent, size: c.Vector2) void {
+pub fn spawn(ecs: *Ecs, position: c.Vector3, direction: c.Vector3, velocity: c.Vector3, texture: ShapeComponent, size: c.Vector3) void {
     const projectileMovementComponent = MovementComponent{ .direction = direction, .velocity = velocity };
     const projectileTransformComponent = TransformComponent{ .position = position, .scale = size };
     const projectile_collision_component = CollisionComponent{

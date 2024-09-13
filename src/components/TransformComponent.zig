@@ -1,5 +1,5 @@
 const c = @import("../c.zig");
 
-position: c.Vector2,
-scale: c.Vector2,
+position: c.Vector3,
+scale: c.Vector3,
 world_id: u8 = 0,

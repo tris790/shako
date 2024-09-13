@@ -26,7 +26,7 @@ pub fn isOpeningInventory() bool {
     return c.IsKeyPressed(c.KEY_I);
 }
 
-pub fn movementDirection() c.Vector2 {
+pub fn movementDirection() c.Vector3 {
     const right: i32 = @intFromBool(c.IsKeyDown(c.KEY_D));
     const left: i32 = @intFromBool(c.IsKeyDown(c.KEY_A));
     const up: i32 = @intFromBool(c.IsKeyDown(c.KEY_W));
@@ -34,9 +34,10 @@ pub fn movementDirection() c.Vector2 {
     const x: i32 = right - left;
     const y: i32 = down - up;
 
-    return c.Vector2{
+    return c.Vector3{
         .x = @floatFromInt(x),
-        .y = @floatFromInt(y),
+        .y = 0,
+        .z = @floatFromInt(y),
     };
 }
 
@@ -53,7 +54,7 @@ pub fn run(ecs: *Ecs) void {
     var movement_component: *MovementComponent = ecs.getComponent(MovementComponent, 0);
     movement_component.direction = movementDirection();
 
-    if (movement_component.direction.x != 0 or movement_component.direction.y != 0) {
+    if (movement_component.direction.x != 0 or movement_component.direction.z != 0) {
         movement_component.last_direction = movement_component.direction;
     }
 
@@ -63,9 +64,9 @@ pub fn run(ecs: *Ecs) void {
             ecs,
             transform_component.position,
             movement_component.last_direction,
-            c.Vector2{ .x = 1000, .y = 1000 },
+            c.Vector3{ .x = 1000, .z = 1000 },
             texture,
-            c.Vector2{ .x = 10, .y = 10 },
+            c.Vector3{ .x = 10, .z = 10 },
         );
     }
 
@@ -86,9 +87,9 @@ pub fn run(ecs: *Ecs) void {
                     const angle = angle_step * @as(f32, @floatFromInt(remaining_projectiles));
                     const opposite = std.math.sin(angle);
                     const adjacent = std.math.cos(angle);
-                    const direction = c.Vector2{
+                    const direction = c.Vector3{
                         .x = adjacent,
-                        .y = opposite,
+                        .z = opposite,
                     };
 
                     const color_index = remaining_projectiles % colors.len;
@@ -97,9 +98,9 @@ pub fn run(ecs: *Ecs) void {
                         ecs,
                         transform_component.position,
                         direction,
-                        c.Vector2{ .x = 1000, .y = 1000 },
+                        c.Vector3{ .x = 1000, .z = 1000 },
                         texture,
-                        c.Vector2{ .x = 10, .y = 10 },
+                        c.Vector3{ .x = 10, .z = 10 },
                     );
 
                     remaining_projectiles -= 1;
@@ -111,14 +112,14 @@ pub fn run(ecs: *Ecs) void {
                     ecs,
                     transform_component.position,
                     movement_component.last_direction,
-                    c.Vector2{ .x = 100, .y = 100 },
+                    c.Vector3{ .x = 100, .z = 100 },
                     texture,
-                    c.Vector2{ .x = 10, .y = 10 },
+                    c.Vector3{ .x = 10, .z = 10 },
                 );
             },
             .Dash => {
-                const displacement = Math.Vector2Scale(movement_component.last_direction, 150);
-                transform_component.position = Math.Vector2Add(transform_component.position, displacement);
+                const displacement = Math.Vector3Scale(movement_component.last_direction, 150);
+                transform_component.position = Math.Vector3Add(transform_component.position, displacement);
             },
         }
     }

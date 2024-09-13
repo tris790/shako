@@ -11,10 +11,10 @@ const HealthComponent = @import("../components/HealthComponent.zig");
 
 pub fn run(ecs: *Ecs, transforms: []TransformComponent, movements: []MovementComponent, collisions: []CollisionComponent) void {
     for (transforms, movements, collisions) |*transform, *movement, *collision| {
-        const displacement = Math.Vector2Scale(Math.Vector2Multiply(movement.direction, movement.velocity), c.GetFrameTime());
+        const displacement = Math.Vector3Scale(Math.Vector3Multiply(movement.direction, movement.velocity), c.GetFrameTime());
 
-        if (displacement.x != 0 or displacement.y != 0) {
-            const newPosition = Math.Vector2Add(transform.position, displacement);
+        if (displacement.x != 0 or displacement.z != 0) {
+            const newPosition = Math.Vector3Add(transform.position, displacement);
 
             var gen_allocator = std.heap.GeneralPurposeAllocator(.{}){};
             defer std.debug.assert(gen_allocator.deinit() == .ok);
@@ -30,7 +30,7 @@ pub fn run(ecs: *Ecs, transforms: []TransformComponent, movements: []MovementCom
                 .is_solid = collision.is_solid,
                 .hitbox = c.Rectangle{
                     .x = hitbox_position.x,
-                    .y = hitbox_position.y,
+                    .y = hitbox_position.z,
                     .width = collision.hitbox.width,
                     .height = collision.hitbox.height,
                 },
@@ -52,7 +52,7 @@ pub fn run(ecs: *Ecs, transforms: []TransformComponent, movements: []MovementCom
                         std.log.err("Couldn't append collision {}", .{collision});
                     };
 
-                    movement.direction = c.Vector2{ .x = 0, .y = 0 };
+                    movement.direction = c.Vector3{ .x = 0, .y = 0, .z = 0 };
                 }
             }
 

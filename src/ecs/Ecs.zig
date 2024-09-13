@@ -14,6 +14,7 @@ const HealthComponent = @import("../components/HealthComponent.zig");
 const HudComponent = @import("../components/HudComponent.zig");
 const InventoryComponent = @import("../components/InventoryComponent.zig");
 const RenderComponent = @import("../components/RenderComponent.zig");
+const AnimationComponent = @import("../components/AnimationComponent.zig");
 
 const InputSystem = @import("../systems/InputSystem.zig");
 const MovementSystem = @import("../systems/MovementSystem.zig");
@@ -21,8 +22,10 @@ const RenderSystem = @import("../systems/RenderSystem.zig");
 const TimeSystem = @import("../systems/TimeSystem.zig");
 const HealthSystem = @import("../systems/HealthSystem.zig");
 const CameraSystem = @import("../systems/CameraSystem.zig");
+const AnimationSystem = @import("../systems/AnimationSystem.zig");
 
 const MAX_ENTITY = 1000;
+const USE_LOCAL_ASSETS = false;
 
 entityCount: u32 = 0,
 transforms: [MAX_ENTITY]TransformComponent = undefined,
@@ -32,16 +35,14 @@ times: [MAX_ENTITY]TimeComponent = undefined,
 collisions: [MAX_ENTITY]CollisionComponent = undefined,
 healths: [MAX_ENTITY]HealthComponent = undefined,
 renders: [MAX_ENTITY]RenderComponent = undefined,
+animations: [MAX_ENTITY]AnimationComponent = undefined,
 
 player: Entity = undefined,
 debug: Debug = Debug{},
 hud: HudComponent = HudComponent{},
 inventory: InventoryComponent = InventoryComponent{},
-camera: c.Camera2D = c.Camera2D{
-    .target = c.Vector2{ .x = 0.0, .y = 0.0 },
-    .offset = c.Vector2{ .x = 0, .y = 0 },
-    .rotation = 0.0,
-    .zoom = 1.0,
+camera: c.Camera3D = c.Camera3D{
+    .target = c.Vector3{ .x = 0.0, .y = 0.0, .z = 0.0 },
 },
 fragmentShader: c.Shader = undefined,
 deltaTime: f32 = 0,
@@ -106,7 +107,7 @@ pub fn loadShaders(self: *Ecs) void {
 }
 
 pub fn loadAssets(self: *Ecs, allocator: Allocator) void {
-    self.assets = Asset.load_all_assets(allocator);
+    self.assets = Asset.load_all_assets(allocator, USE_LOCAL_ASSETS);
 }
 
 pub fn runSystems(self: *Ecs) void {
@@ -117,6 +118,7 @@ pub fn runSystems(self: *Ecs) void {
     HealthSystem.run(self, self.healths[0..self.entityCount]);
     CameraSystem.run(self, &self.camera, &self.transforms[0].position);
 
+    AnimationSystem.run(self, self.animations[0..self.entityCount]);
     RenderSystem.run(
         self,
         self.transforms[0..self.entityCount],
