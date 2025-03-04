@@ -47,6 +47,7 @@ camera: c.Camera3D = c.Camera3D{
 fragmentShader: c.Shader = undefined,
 deltaTime: f32 = 0,
 assets: std.ArrayList(Asset) = undefined,
+camera_zoom: f32 = 150.0,
 
 const Ecs = @This();
 

@@ -28,12 +28,7 @@ pub fn run(ecs: *Ecs, transforms: []TransformComponent, movements: []MovementCom
             const test_collision = CollisionComponent{
                 .ignore = collision.ignore,
                 .is_solid = collision.is_solid,
-                .hitbox = c.Rectangle{
-                    .x = hitbox_position.x,
-                    .y = hitbox_position.z,
-                    .width = collision.hitbox.width,
-                    .height = collision.hitbox.height,
-                },
+                .hitbox = hitbox_position,
             };
 
             var entityId: u32 = 0;

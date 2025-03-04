@@ -24,14 +24,14 @@ ecs: Ecs = Ecs{},
 pub fn init(self: *@This()) void {
     self.ecs.loadAssets(self.allocator);
     self.ecs.loadShaders();
-    self.ecs.camera.position = c.Vector3{ .x = 0, .y = 500, .z = 500 };
+    self.ecs.camera.position = c.Vector3{ .x = 0.0, .y = 0.0, .z = 0.0 };
     self.ecs.camera.target = c.Vector3{ .x = 0, .y = 0, .z = 0 };
     self.ecs.camera.up = c.Vector3{ .x = 0.0, .y = 1.0, .z = 0.0 };
     self.ecs.camera.fovy = 45.0; // Camera field-of-view Y
     self.ecs.camera.projection = c.CAMERA_PERSPECTIVE; // Camera mode type
     createPlayer(&self.ecs);
     createMonster(&self.ecs);
-    createWall(&self.ecs);
+    // createWall(&self.ecs);
     createInventory(&self.ecs);
 }
 
@@ -40,10 +40,11 @@ pub fn simulate(self: *@This()) void {
 }
 
 fn createPlayer(ecs: *Ecs) void {
-    const width = 50;
-    const height = 50;
+    const width = 10;
+    const height = 10;
+    const depth = 10;
     const player_transform_component = TransformComponent{
-        .position = c.Vector3{ .x = 0, .y = 0, .z = 0 },
+        .position = c.Vector3{ .x = 0, .y = 1, .z = 0 },
         .scale = c.Vector3{ .x = 1, .y = 1, .z = 1 },
     };
     const player_movement_component = MovementComponent{ .velocity = c.Vector3{ .x = 1000, .y = 0, .z = 1000 } };
@@ -53,11 +54,10 @@ fn createPlayer(ecs: *Ecs) void {
 
     const player_collision_component = CollisionComponent{
         .ignore = 0,
-        .hitbox = c.Rectangle{
-            .x = -(width / 2),
-            .y = -(height / 2),
-            .width = width,
-            .height = height,
+        .hitbox = c.Vector3{
+            .x = width,
+            .y = height,
+            .z = depth,
         },
     };
 
@@ -72,19 +72,19 @@ fn createPlayer(ecs: *Ecs) void {
 }
 
 fn createMonster(ecs: *Ecs) void {
-    const width = 50;
-    const height = 50;
+    const width = 20;
+    const height = 20;
+    const depth = 20;
     const monster_transform_component = TransformComponent{
-        .position = c.Vector3{ .x = 50, .y = 0, .z = 0 },
+        .position = c.Vector3{ .x = 50, .y = 1, .z = 0 },
         .scale = c.Vector3{ .x = 1, .y = 1, .z = 1 },
     };
     const monster_collision_component = CollisionComponent{
         .ignore = 1,
-        .hitbox = c.Rectangle{
-            .x = -(width / 2),
-            .y = -(height / 2),
-            .width = width,
-            .height = height,
+        .hitbox = c.Vector3{
+            .x = width,
+            .y = height,
+            .z = depth,
         },
     };
     const monster_render_component = RenderComponent{ .asset_id = 3 };
@@ -95,17 +95,17 @@ fn createMonster(ecs: *Ecs) void {
 fn createWall(ecs: *Ecs) void {
     const width = 100;
     const height = 50;
+    const depth = 100;
     const wall_transform_component = TransformComponent{
         .position = c.Vector3{ .x = -300, .y = 0, .z = -300 },
         .scale = c.Vector3{ .x = width, .y = 1, .z = height },
     };
     const wall_collision_component = CollisionComponent{
         .ignore = 2,
-        .hitbox = c.Rectangle{
-            .x = wall_transform_component.position.x,
-            .y = wall_transform_component.position.z,
-            .width = width,
-            .height = height,
+        .hitbox = c.Vector3{
+            .x = width,
+            .y = height,
+            .z = depth,
         },
     };
     const wall_texture_component = ShapeComponent{ .color = c.BLACK, .shape = Shape.Rectangle };

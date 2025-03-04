@@ -26,6 +26,10 @@ pub fn isOpeningInventory() bool {
     return c.IsKeyPressed(c.KEY_I);
 }
 
+pub fn getZoom() f32 {
+    return c.GetMouseWheelMove();
+}
+
 pub fn movementDirection() c.Vector3 {
     const right: i32 = @intFromBool(c.IsKeyDown(c.KEY_D));
     const left: i32 = @intFromBool(c.IsKeyDown(c.KEY_A));
@@ -142,5 +146,10 @@ pub fn run(ecs: *Ecs) void {
 
     if (isOpeningInventory()) {
         ecs.inventory.opened = !ecs.inventory.opened;
+    }
+
+    const zoom = getZoom();
+    if (zoom != 0) {
+        ecs.camera_zoom += zoom * -25;
     }
 }

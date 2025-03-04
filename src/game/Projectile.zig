@@ -12,12 +12,7 @@ pub fn spawn(ecs: *Ecs, position: c.Vector3, direction: c.Vector3, velocity: c.V
     const projectileTransformComponent = TransformComponent{ .position = position, .scale = size };
     const projectile_collision_component = CollisionComponent{
         .ignore = 0,
-        .hitbox = c.Rectangle{
-            .x = -size.x,
-            .y = -size.y,
-            .width = size.x * 2,
-            .height = size.y * 2,
-        },
+        .hitbox = size,
     };
 
     _ = ecs.createEntity(.{ projectileMovementComponent, projectileTransformComponent, texture, projectile_collision_component });

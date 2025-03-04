@@ -38,7 +38,7 @@ pub fn run(
 
         c.BeginMode3D(camera.*);
 
-        c.DrawPlane(c.Vector3{ .x = 0, .y = 0, .z = 0 }, c.Vector2{ .x = 1000, .y = 1000 }, c.GRAY);
+        c.DrawPlane(c.Vector3{ .x = 0, .y = 0.0, .z = 0 }, c.Vector2{ .x = 1000, .y = 1000 }, c.GRAY);
         renderComponents(ecs, transforms, collisions, renders);
         // renderShapes(ecs, transforms, shapes, collisions, healths);
 
@@ -101,8 +101,11 @@ fn renderComponents(
         if (transform.world_id >= 0) {
             if (ecs.debug.render_hitboxes) {
                 const hitbox_position = collision.addPositionToHitbox(transform.position);
-                const hitbox = c.Rectangle{ .x = hitbox_position.x, .y = hitbox_position.z, .width = collision.hitbox.width, .height = collision.hitbox.height };
-                c.DrawRectangleRec(hitbox, c.YELLOW);
+                std.log.info(
+                    "Rendering hitbox at position: ({d}, {d}, {d})",
+                    .{ hitbox_position.x, hitbox_position.y, hitbox_position.z },
+                );
+                c.DrawCube(hitbox_position, collision.hitbox.x, collision.hitbox.y, collision.hitbox.z, c.YELLOW);
             }
 
             if (render.asset_id > 0) {
